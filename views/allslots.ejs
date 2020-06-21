@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/pulse/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/core.main.min.css">
+    <link rel="stylesheet" href="/css/daygrid-main.css">
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script src="https://unpkg.com/react@16.7.0/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.production.min.js"></script>
+    <script src="/js/core.main.min.js"></script>
+    <script src="/js/daygrid-main.js"></script>
+    <script src="/js/interaction.main.js"></script>
+
+    <title>Login</title>
+    <style>
+        .customborder {
+            border-radius: 2%;
+            border: 2px solid #593196;
+        }
+
+        #calendar {
+            max-width: 900px;
+            margin: 10px auto;
+        }
+    </style>
+    <script>
+        var obj;
+        document.addEventListener('DOMContentLoaded', function () {
+
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: ['interaction', 'dayGrid'],
+                selectable: true,
+                dateClick: function (dateClickInfo) {
+                    var clickedDate = dateClickInfo.date.getFullYear() + "-" + dateClickInfo.date.getMonth() + "-" + dateClickInfo.date.getDate();
+                    // alert('clicked ' + ' ' + clickedDate  );
+                    // obj = JSON.parse('{ "clickedDate": clickedDate }');
+                    // var text = slots;
+                    // var obj = JSON.parse(slots);
+                    // for (var i = 0; i < obj.slots.length; i++) {
+                    //     // var myJSON = JSON.stringify(slots[i]);
+                    //     if (clickedDate == obj.slots[i].date) {
+                    //         var table = document.getElementById("myTable");
+                    //         var row = table.insertRow(0);
+                    //         var cell1 = row.insertCell(0);
+
+                    //         cell1.innerHTML = obj.slots[i].time;
+                    //         console.log(obj.slots[i].time)
+                    //     }
+
+                    // }
+ 
+                }
+
+            });
+
+            calendar.render();
+        });
+
+    </script>
+</head>
+
+<body>
+    <h3 class="p-4">Available Slots of <%= user %> !</h3>
+
+    <div class="container">
+        <h3 class="text-center p-3">Booking made easy.</h3>
+        <div style="margin: 0 auto;" class="col-12 col-md-6 col-lg-5 p-5 customborder">
+            <div id='calendar'></div>
+            <div class="container text-center p-3">
+
+                <table id="myTable">
+                    <% for(var i=0; i < slots.length; i++) { %>
+                        
+                    <tr>
+                        <!-- <td><%= slots[i].date %></td> -->
+
+                        <!-- <td> -->
+                            <form action="#" method="POST">
+                                <div class="form-group">
+                                    <!-- <input type="submit" class="btn btn-block btn-outline-primary" -->
+                                        <!-- value=<%= slots[i].time %>> -->
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal">
+                                            <%= slots[i].time %>
+                                          </button>
+                                </div>
+                            </form>
+                        <!-- </td> -->
+                    </tr>
+                    <% } %>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Want to confirm this time</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <form action= <%= uid %>/slots/<%= user %> method="POST">
+                    
+                    <div class="form-group">
+                        <label for="title">Enter Your Title</label>
+                        <input type="text" class="form-control" name="title" id="title" autocomplete="off"
+                            placeholder="Title">
+                    </div>
+                    <div class="form-group">
+                        <label for="discription">Enter Your Discription</label>
+                        <input type="text" class="form-control" name="discription" id="discription" autocomplete="off"
+                            placeholder="Discription">
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-block btn-outline-primary" value="Confirm">
+                    </div>
+                </form>
+            </div>
+            <!-- <div class="modal-footer">
+              <button type="button" class="btn btn-primary">Save changes</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div> -->
+          </div>
+        </div>
+      </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

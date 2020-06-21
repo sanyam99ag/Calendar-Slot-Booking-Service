@@ -14,7 +14,7 @@ const flash = require('connect-flash')
 
 const app = express();
 app.set('view engine', 'ejs');
-app.use(express.static(__dirname + './public/'));
+app.use(express.static(__dirname + '/public'));
 
 
 // using Bodyparser for getting form data
@@ -193,11 +193,72 @@ app.post('/slot', checkAuthenticated, async (req, res) => {
     });
 })
 
+// Slots GET route 
+// To get all available slots based on the uniq id of partiular user
+app.get("/:uniqid/slots", checkAuthenticated, async (req, res) => {
+    user.findById(req.params.uniqid).populate("slots").exec(async (error, foundUser) => {
+        if (error) 
+        {
+            console.log(error);
+            return res.redirect('/404')
+        }
+
+        if (!foundUser) {
+            console.log("Api url does not exist");
+            return res.status(400).json({ success: false, msg: "Api url does not exists" });
+        }
+        res.render('allslots', { 'user': foundUser.username, 'uid': foundUser._id , slots: foundUser.slots })
+    });
+
+})
+
+// Book slot
+app.post("/:uniqid/slots/:id", checkAuthenticated, async (req, res) => {
+    slot.findById(req.params.id, async (error, foundSlot) => {
+        if (error) {
+            console.log(error);
+            return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
+        }
+        if (!foundSlot) {
+            console.log("Slot with given id not found");
+            return res.status(400).json({ success: false, msg: "Please check the slot id" });
+        }
+        foundSlot.free = false;
+        foundSlot.booked_by = req.user._id;
+        foundSlot.booked_on = new Date().toUTCString();
+        foundSlot.title = req.body.title;   
+        foundSlot.description = req.body.description;
+        foundSlot.save( async (error, savedSlot) => {
+            if (error) {
+                console.log(error);
+                return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
+            }
+            user.findById(req.user._id, async (error, foundUser) => {
+                if (error) {
+                    console.log(error);
+                    return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
+                }
+                foundUser.bookedSlots.push(savedSlot._id);
+                foundUser.save(function (error, savedUser) {
+                    if (error) {
+                        console.log(error);
+                        return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
+                    }
+                    return res.status(200).json({ success: true, msg: "Slot booking successful", slot: savedSlot });
+                });
+            });
+        });
+    });
+})
 
 // Logout GET route
 app.get('/logout', async (req, res) => {
     req.logout();
     res.redirect('/login');
+})
+
+app.get('/404', async (req, res) => {
+    res.render('404')
 })
 
 
