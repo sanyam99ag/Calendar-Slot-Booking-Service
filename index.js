@@ -57,7 +57,7 @@ const checkAuthenticated = function (req, res, next) {
 }
 
 // Mongoose connection
-mongoose.connect( porcess.env.MONGODB_URI || 'mongodb://localhost/nodeAuthentication', {
+mongoose.connect( process.env.MONGODB_URI || 'mongodb://localhost/nodeAuthentication', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => console.log('Database connected'));
