@@ -13,6 +13,7 @@ const flash = require('connect-flash')
 
 
 const app = express();
+PORT = process.env.PORT || 5000;
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 
@@ -56,7 +57,7 @@ const checkAuthenticated = function (req, res, next) {
 }
 
 // Mongoose connection
-mongoose.connect('mongodb://localhost/nodeAuthentication', {
+mongoose.connect( porcess.env.MONGODB_URI || 'mongodb://localhost/nodeAuthentication', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => console.log('Database connected'));
@@ -205,7 +206,7 @@ app.get("/:uniqid/slots", checkAuthenticated, async (req, res) => {
 
         if (!foundUser) {
             console.log("Api url does not exist");
-            return res.status(400).json({ success: false, msg: "Api url does not exists" });
+            return res.redirect('/404')
         }
         res.render('allslots', { 'user': foundUser.username, 'uid': foundUser._id , slots: foundUser.slots })
     });
@@ -262,4 +263,4 @@ app.get('/404', async (req, res) => {
 })
 
 
-app.listen(5000, () => console.log('Listening to the port 5000'));
+app.listen(PORT, () => console.log(`Listening to the port ${PORT}`));

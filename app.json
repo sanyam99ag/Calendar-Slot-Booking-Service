@@ -1,0 +1,6 @@
+{
+    "name": "Navigus Round 2 Assignment",
+    "repository": "https://github.com/sanyam99ag/Navigus-CodingAssignment-Round2",
+    "keyword": ["nodejs", "mongodb", "express"],
+    "image": "heroku/nodejs"
+}
