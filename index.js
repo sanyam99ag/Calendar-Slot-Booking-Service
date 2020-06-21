@@ -2,7 +2,8 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bodyparser = require('body-parser');
 const bcrypt = require('bcryptjs')
-const user = require('./modals.js')
+const user = require('./models/user.js')
+const slot = require('./models/slot.js')
 const passport = require('passport')
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
@@ -13,7 +14,7 @@ const flash = require('connect-flash')
 
 const app = express();
 app.set('view engine', 'ejs');
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + './public/'));
 
 
 // using Bodyparser for getting form data
@@ -54,67 +55,61 @@ const checkAuthenticated = function (req, res, next) {
     }
 }
 
-// mongoose connection
+// Mongoose connection
 mongoose.connect('mongodb://localhost/nodeAuthentication', {
-    useNewUrlParser : true,
+    useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => console.log('Database connected'));
 
-// Initial Register route
+// Initial Register GET route
 app.get('/', async (req, res) => {
     res.render('register')
 })
 
 // Register POST route to get the form data
 app.post('/register', async (req, res) => {
-    var {email, username, password, confirmpassword} = req.body;
-    var err;  
+    var { email, username, password, confirmpassword } = req.body;
+    var err;
 
     // if any field is empty
-    if(!email || !username || !password || !confirmpassword)
-    {
+    if (!email || !username || !password || !confirmpassword) {
         err = 'Please fill all details!'
-        res.render('register', { 'err': err});
+        res.render('register', { 'err': err });
     }
 
     // if password doesn't match
-    if( password != confirmpassword)
-    {
+    if (password != confirmpassword) {
         err = 'Passwords Don\'t match!'
-        res.render('register', { 'err': err, 'email': email, 'username': username});
+        res.render('register', { 'err': err, 'email': email, 'username': username });
     }
 
     // if everything is fine then check for exiting email in db
-    if( typeof err == 'undefined')
-    {
-        const check = await user.exists({email: req.body.email})
-        if(check == false)
-        {
+    if (typeof err == 'undefined') {
+        const check = await user.exists({ email: req.body.email })
+        if (check == false) {
             bcrypt.genSalt(10, async (err, salt) => {
-                if(err) throw err;
+                if (err) throw err;
                 bcrypt.hash(password, salt, async (err, hash) => {
-                    if(err) throw err;
+                    if (err) throw err;
                     password = hash;
 
                     // save new user
-                    await user.create( {
+                    await user.create({
                         email,
                         username,
                         password
                     })
                     req.flash('success_message', "Registered Successfully.. Login To Continue..");
-                    res.redirect('/login');                    
+                    res.redirect('/login');
                 });
             });
         }
-        else
-        {
+        else {
             console.log('user exists')
             err = 'User with this email already exists!'
             res.render('register', { 'err': err });
         }
-        
-    } 
+    }
 })
 
 
@@ -155,7 +150,7 @@ app.get('/login', async (req, res) => {
     res.render('login');
 })
 
-// Login post route
+// Login POST route
 app.post('/login', (req, res, next) => {
     passport.authenticate('local', {
         failureRedirect: '/login',
@@ -164,12 +159,42 @@ app.post('/login', (req, res, next) => {
     })(req, res, next);
 });
 
-// Success route
-app.get('/success', checkAuthenticated , async (req, res) => {
+// Success GET route
+app.get('/success', checkAuthenticated, async (req, res) => {
     res.render('success', { 'user': req.user });
 });
 
-// Logout route
+// Success POST route to get availabe slot information entered by owner
+// Add Slots
+app.post('/slot', checkAuthenticated, async (req, res) => {
+
+    const date = req.body.date;
+    const time = req.body.time;
+    const owner = req.user._id;
+    console.log(date, time, owner);
+    const newslot = await new slot({ date: date, time: time, owner: owner });
+    newslot.save(async (error, savedSlot) => {
+        if (error) throw error; //404
+
+        if (savedSlot) {
+            user.findById(req.user._id, async (error, foundUser) => {
+                if (error) throw error; //404
+
+                foundUser.slots.push(savedSlot);
+                foundUser.save(async (error, savedUser) => {
+                    if (error) throw error; //404
+
+                    req.flash('success_message', "Slot set to available!");
+                    res.redirect('/success');
+
+                });
+            });
+        }
+    });
+})
+
+
+// Logout GET route
 app.get('/logout', async (req, res) => {
     req.logout();
     res.redirect('/login');

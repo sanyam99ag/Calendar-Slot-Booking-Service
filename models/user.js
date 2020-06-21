@@ -13,9 +13,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    message: [{
-        type: String
-    }]
-})
+    slots: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "slot"
+    }],
+    bookedSlots: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "slot"
+    }],
+    api_url: String
+});
 
 module.exports = new mongoose.model('user', userSchema )

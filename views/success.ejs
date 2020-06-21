@@ -6,21 +6,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/pulse/bootstrap.min.css">
+
     <title>Success</title>
+    <style>
+        .customborder {
+            border-radius: 2%;
+            border: 2px solid #593196;
+        }
+    </style>
 </head>
 
 <body>
 
-    
-      
     <div class="container text-center">
-        <h3 class="p-4">Welcome <%= user.username%> !</h3>
-        <h3 class="p-2">You Have Logged In Successfully ! </h3>
+        <h3 class="p-4">Hello <%= user.username%> !</h3>
+        <h3 class="p-2">Welcome to your dashboard! </h3>
         <a style="float: right;" class="btn btn-danger" href="/logout">Logout</a>
-        <div class="container p-3">
-            
-            <p>
-            </p>
+
+        <div class="container">
+            <h3 class="text-center p-3">Specify your availabe Date and Time</h3>
+            <div style="margin: 0 auto;" class="col-12 col-md-6 col-lg-5 p-5 customborder">
+                <% if (success_message != ''){ %>
+                    <div class="alert alert-dismissible alert-success">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <strong> <%= success_message %> </strong>
+                    </div>
+                <% } %>
+                <% if(typeof err != 'undefined') {%>
+                    <div class="alert alert-dismissible alert-danger">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <strong> <%= err %> </strong>
+                    </div>
+                <%}%>
+                
+                <form action="/slot" method="POST">
+                    
+                    <div class="form-group">
+                        <label for="date">Enter Date</label>
+                        <input type="date" class="form-control" name="date" id="date" autocomplete="off"
+                            placeholder="" >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="time">Enter Time</label>
+                        <input type="time" class="form-control" name="time" id="time" autocomplete="off"
+                            placeholder="">
+                    </div>
+                    <!-- <div class="form-group">
+                        <label for="endtime">End Time</label>
+                        <input type="time" class="form-control" name="endtime" id="endtime" autocomplete="off"
+                            placeholder="endtime">
+                    </div> -->
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-block btn-outline-primary" value="Free Slot">
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </body>
