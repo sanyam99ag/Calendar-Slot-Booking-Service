@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bodyparser = require('body-parser');
+
 const bcrypt = require('bcryptjs')
 const user = require('./models/user.js')
 const slot = require('./models/slot.js')
@@ -9,7 +10,7 @@ const session = require('express-session')
 const cookieParser = require('cookie-parser')
 const flash = require('connect-flash')
 
-require('dotenv').config({ path: 'dev.env' });
+// require('dotenv').config({ path: 'dev.env' });
 var var_arr = ['Refresh the browser to see your events!']
 // const { Strategy } = require('passport-local')
 
