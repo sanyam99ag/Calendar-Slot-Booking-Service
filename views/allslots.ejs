@@ -39,23 +39,8 @@
                 selectable: true,
                 dateClick: function (dateClickInfo) {
                     var clickedDate = dateClickInfo.date.getFullYear() + "-" + dateClickInfo.date.getMonth() + "-" + dateClickInfo.date.getDate();
-                    // alert('clicked ' + ' ' + clickedDate  );
-                    // obj = JSON.parse('{ "clickedDate": clickedDate }');
-                    // var text = slots;
-                    // var obj = JSON.parse(slots);
-                    // for (var i = 0; i < obj.slots.length; i++) {
-                    //     // var myJSON = JSON.stringify(slots[i]);
-                    //     if (clickedDate == obj.slots[i].date) {
-                    //         var table = document.getElementById("myTable");
-                    //         var row = table.insertRow(0);
-                    //         var cell1 = row.insertCell(0);
 
-                    //         cell1.innerHTML = obj.slots[i].time;
-                    //         console.log(obj.slots[i].time)
-                    //     }
 
-                    // }
- 
                 }
 
             });
@@ -77,62 +62,63 @@
 
                 <table id="myTable">
                     <% for(var i=0; i < slots.length; i++) { %>
-                        
-                    <tr>
-                        <!-- <td><%= slots[i].date %></td> -->
 
-                        <!-- <td> -->
-                            <form action="#" method="POST">
-                                <div class="form-group">
-                                    <!-- <input type="submit" class="btn btn-block btn-outline-primary" -->
-                                        <!-- value=<%= slots[i].time %>> -->
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal">
-                                            <%= slots[i].time %>
-                                          </button>
-                                </div>
-                            </form>
-                        <!-- </td> -->
+                    <tr>
+
+                        <form action="#" method="POST">
+                            <div class="form-group">
+
+                                <button type="button" id="<%= slots[i].__id %>" class="btn btn-primary"
+                                    data-toggle="modal" data-target=".modal">
+                                    <%= slots[i].time %>
+                                </button>
+                            </div>
+                        </form>
                     </tr>
                     <% } %>
                 </table>
             </div>
         </div>
     </div>
-
+    <!-- <script> 
+        var first = <%= uid %>; 
+        var el_down = document.getElementById("GFG_DOWN"); 
+        el_up.innerHTML = "Click on button to get ID"; 
+      
+        function GFG_click(clicked) { 
+            el_down.innerHTML = "ID = "+clicked; 
+        }          
+    </script>   -->
     <div class="modal">
         <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Want to confirm this time</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Want to confirm this time</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        onClick="reply_click(this.id)" span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="<%= uid %>/slots/clicked_id" method="POST">
+
+                        <div class="form-group">
+                            <label for="title">Enter Your Title</label>
+                            <input type="text" class="form-control" name="title" id="title" autocomplete="off"
+                                placeholder="Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="discription">Enter Your Discription</label>
+                            <input type="text" class="form-control" name="discription" id="discription"
+                                autocomplete="off" placeholder="Discription">
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-block btn-outline-primary" value="Confirm">
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="modal-body">
-                <form action= <%= uid %>/slots/<%= user %> method="POST">
-                    
-                    <div class="form-group">
-                        <label for="title">Enter Your Title</label>
-                        <input type="text" class="form-control" name="title" id="title" autocomplete="off"
-                            placeholder="Title">
-                    </div>
-                    <div class="form-group">
-                        <label for="discription">Enter Your Discription</label>
-                        <input type="text" class="form-control" name="discription" id="discription" autocomplete="off"
-                            placeholder="Discription">
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" class="btn btn-block btn-outline-primary" value="Confirm">
-                    </div>
-                </form>
-            </div>
-            <!-- <div class="modal-footer">
-              <button type="button" class="btn btn-primary">Save changes</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div> -->
-          </div>
         </div>
-      </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
         integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
