@@ -57,8 +57,9 @@ const checkAuthenticated = function (req, res, next) {
     }
 }
 
+
 // Mongoose connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/nodeAuthentication', {
+mongoose.connect("mongodb+srv://slot:slotter@cluster0-u4rjh.mongodb.net/SLOTFREE?retryWrites=true&w=majority" || process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => console.log('Database connected'));
@@ -70,7 +71,7 @@ app.get('/', async (req, res) => {
 
 // Register POST route to get the form data
 app.post('/register', async (req, res) => {
-    var { email, username, password, confirmpassword } = req.body;
+    var { email, username, password, confirmpassword } = await req.body;
     var err;
 
     // if any field is empty
@@ -102,10 +103,12 @@ app.post('/register', async (req, res) => {
                     req.flash('success_message', "Registered Successfully.. Login To Continue..");
                     res.redirect('/login');
                 });
+
             });
         }
         else {
             console.log('user exists')
+
             err = 'User with this email already exists!'
             res.render('register', { 'err': err });
         }
@@ -215,7 +218,7 @@ app.get("/:uniqid/slots", checkAuthenticated, async (req, res) => {
 app.post("/:uniqid/slots/:id", checkAuthenticated, async (req, res) => {
     const { google } = require('googleapis');
     const { OAuth2 } = google.auth
-    const oAuth2Client = new OAuth2( process.nextTick.CLIENT_ID, process.nextTick.SECRET )
+    const oAuth2Client = new OAuth2(process.nextTick.CLIENT_ID, process.nextTick.SECRET)
 
     oAuth2Client.setCredentials({
         refresh_token: process.env.REFRESH_TOKEN
@@ -265,45 +268,45 @@ app.post("/:uniqid/slots/:id", checkAuthenticated, async (req, res) => {
             }
             return console.log('Sorry my schedule is busy')
         }
-        )
+    )
 
-})
 
-slot.findById(req.params.id, async (error, foundSlot) => {
-    if (error) {
-        console.log(error);
-        return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
-    }
-    if (!foundSlot) {
-        console.log("Slot with given id not found");
-        return res.status(400).json({ success: false, msg: "Please check the slot id" });
-    }
-    foundSlot.free = false;
-    foundSlot.booked_by = req.user._id;
-    foundSlot.booked_on = new Date().toUTCString();
-    foundSlot.title = req.body.title;
-    foundSlot.description = req.body.description;
-    foundSlot.save(async (error, savedSlot) => {
+    slot.findById(req.params.id, async (error, foundSlot) => {
         if (error) {
             console.log(error);
             return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
         }
-        user.findById(req.user._id, async (error, foundUser) => {
+        if (!foundSlot) {
+            console.log("Slot with given id not found");
+            return res.status(400).json({ success: false, msg: "Please check the slot id" });
+        }
+        foundSlot.free = false;
+        foundSlot.booked_by = req.user._id;
+        foundSlot.booked_on = new Date().toUTCString();
+        foundSlot.title = req.body.title;
+        foundSlot.description = req.body.description;
+        foundSlot.save(async (error, savedSlot) => {
             if (error) {
                 console.log(error);
                 return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
             }
-            foundUser.bookedSlots.push(savedSlot._id);
-            foundUser.save(function (error, savedUser) {
+            user.findById(req.user._id, async (error, foundUser) => {
                 if (error) {
                     console.log(error);
                     return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
                 }
-                return res.status(200).json({ success: true, msg: "Slot booking successful", slot: savedSlot });
+                foundUser.bookedSlots.push(savedSlot._id);
+                foundUser.save(function (error, savedUser) {
+                    if (error) {
+                        console.log(error);
+                        return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
+                    }
+                    return res.status(200).json({ success: true, msg: "Slot booking successful", slot: savedSlot });
+                });
             });
         });
     });
-});
+})
 
 app.get('/googcal', checkAuthenticated, async (req, res) => {
     res.render('googleCalAuth');

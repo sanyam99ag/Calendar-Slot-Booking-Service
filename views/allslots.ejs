@@ -52,11 +52,13 @@
 </head>
 
 <body>
-    <h3 class="p-4">Available Slots of <%= user %> !</h3>
-
+    
     <div class="container">
-        <h3 class="text-center p-3">Booking made easy.</h3>
-        <div style="margin: 0 auto;" class="col-12 col-md-6 col-lg-5 p-5 customborder">
+        <h3 class="text-center p-3">Available Slots of <%= user %> !</h3>
+        <h3 class="text-center p-2">Booking made easy.</h3>
+        <a style="float: right;" class="btn btn-danger" href="/success">Dashboard</a>
+
+        <div style="margin: 0 auto;" class="col-12 col-md-6 col-lg-5 p-2 customborder">
             <div id='calendar'></div>
             <div class="container text-center p-3">
 
@@ -80,15 +82,14 @@
             </div>
         </div>
     </div>
-    <!-- <script> 
-        var first = <%= uid %>; 
-        var el_down = document.getElementById("GFG_DOWN"); 
-        el_up.innerHTML = "Click on button to get ID"; 
-      
-        function GFG_click(clicked) { 
-            el_down.innerHTML = "ID = "+clicked; 
-        }          
-    </script>   -->
+    <script> 
+        var first = "<%= uid %>"
+        var second = SVGPathSegLinetoAbs
+        var third = clicked_id
+        var urls = '/' + first + '/' + second + '/' + third
+        var val = document.getElementById("modal").action = urls;
+
+    </script>  
     <div class="modal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -99,7 +100,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="<%= uid %>/slots/clicked_id" method="POST">
+                    <form action="" method="POST" id="modal">
 
                         <div class="form-group">
                             <label for="title">Enter Your Title</label>
