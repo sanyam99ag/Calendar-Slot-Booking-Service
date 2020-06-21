@@ -77,15 +77,13 @@ app.post('/register', async (req, res) => {
         err = 'Please fill all details!'
         res.render('register', { 'err': err });
     }
-
     // if password doesn't match
-    if (password != confirmpassword) {
+    else if (password != confirmpassword) {
         err = 'Passwords Don\'t match!'
         res.render('register', { 'err': err, 'email': email, 'username': username });
     }
-
     // if everything is fine then check for exiting email in db
-    if (typeof err == 'undefined') {
+    else if (typeof err == 'undefined') {
         const check = await user.exists({ email: req.body.email })
         if (check == false) {
             bcrypt.genSalt(10, async (err, salt) => {
