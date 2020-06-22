@@ -61,7 +61,7 @@ const checkAuthenticated = function (req, res, next) {
 
 
 // Mongoose connection
-mongoose.connect("mongodb+srv://slot:slotter@cluster0-u4rjh.mongodb.net/SLOTFREE?retryWrites=true&w=majority" , {
+mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://slot:slotter@cluster0-u4rjh.mongodb.net/SLOTFREE?retryWrites=true&w=majority" , {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => console.log('Database connected')).catch(err => console.log(err));
@@ -75,7 +75,6 @@ app.get('/', async (req, res) => {
 app.post('/register', async (req, res) => {
     var { email, username, password, confirmpassword } = await req.body;
     var err;
-
     // if any field is empty
     if (!email || !username || !password || !confirmpassword) {
         err = 'Please fill all details!'
