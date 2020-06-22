@@ -61,7 +61,7 @@ const checkAuthenticated = function (req, res, next) {
 
 
 // Mongoose connection
-mongoose.connect(process.env.MONGODB_URI , {
+mongoose.connect("mongodb+srv://slot:slotter@cluster0-u4rjh.mongodb.net/SLOTFREE?retryWrites=true&w=majority" , {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => console.log('Database connected')).catch(err => console.log(err));
