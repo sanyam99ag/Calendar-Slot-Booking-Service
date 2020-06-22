@@ -16,7 +16,7 @@
     <script src="/js/daygrid-main.js"></script>
     <script src="/js/interaction.main.js"></script>
 
-    <title>Login</title>
+    <title>Book Slots</title>
     <style>
         .customborder {
             border-radius: 2%;
@@ -28,7 +28,7 @@
             margin: 10px auto;
         }
     </style>
-    <script>
+    <script type="text/javascript">
         var obj;
         document.addEventListener('DOMContentLoaded', function () {
 
@@ -39,6 +39,8 @@
                 selectable: true,
                 dateClick: function (dateClickInfo) {
                     var clickedDate = dateClickInfo.date.getFullYear() + "-" + dateClickInfo.date.getMonth() + "-" + dateClickInfo.date.getDate();
+                    // console.log(clickedDate)
+                    // d = new Date(dateClickInfo.date.getFullYear(), dateClickInfo.date.getMonth(), dateClickInfo.date.getDate())
 
 
                 }
@@ -48,11 +50,18 @@
             calendar.render();
         });
 
+        function myFunction() {
+            // console.log("clicked")
+            var lst = document.getElementsByClassName('slotid').id
+            var fst = document.getElementById('modalf').action;
+            console.log(fst, lst)
+            document.getElementById('modalf').action = lst;
+        }
     </script>
 </head>
 
 <body>
-    
+
     <div class="container">
         <h3 class="text-center p-3">Available Slots of <%= user %> !</h3>
         <h3 class="text-center p-2">Booking made easy.</h3>
@@ -65,42 +74,29 @@
                 <table id="myTable">
                     <% for(var i=0; i < slots.length; i++) { %>
 
-                    <tr>
+                    <td>
 
-                        <form action="#" method="POST">
-                            <div class="form-group">
+                        <button type="button" id="<%= slots[i]._id %>" class=" slotid btn btn-primary"
+                            onclick="myFunction()" data-toggle="modal" data-target=".modal">
+                            <%= slots[i].time %>
+                        </button>
 
-                                <button type="button" id="<%= slots[i].__id %>" class="btn btn-primary"
-                                    data-toggle="modal" data-target=".modal">
-                                    <%= slots[i].time %>
-                                </button>
-                            </div>
-                        </form>
-                    </tr>
+                    </td>
                     <% } %>
                 </table>
             </div>
         </div>
     </div>
-    <script> 
-        var first = "<%= uid %>"
-        var second = SVGPathSegLinetoAbs
-        var third = clicked_id
-        var urls = '/' + first + '/' + second + '/' + third
-        var val = document.getElementById("modal").action = urls;
 
-    </script>  
     <div class="modal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Want to confirm this time</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                        onClick="reply_click(this.id)" span aria-hidden="true">&times;</span>
-                    </button>
+
                 </div>
                 <div class="modal-body">
-                    <form action="" method="POST" id="modal">
+                    <form action="/<%= uid %>/slots/" method="POST" id="modalf">
 
                         <div class="form-group">
                             <label for="title">Enter Your Title</label>

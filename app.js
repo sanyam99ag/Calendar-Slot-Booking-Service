@@ -210,13 +210,49 @@ app.get("/:uniqid/slots", checkAuthenticated, async (req, res) => {
             console.log("Api url does not exist");
             return res.redirect('/404')
         }
-        res.render('allslots', { 'user': foundUser.username, 'uid': foundUser._id, slots: foundUser.slots })
+        res.render('allslots', { 'user': foundUser.username, 'uid': foundUser._id, 'slots': foundUser.slots })
     });
 
 })
 
 // Book slot
 app.post("/:uniqid/slots/:id", checkAuthenticated, async (req, res) => {
+    slot.findById(req.params.id, async (error, foundSlot) => {
+        if (error) {
+            console.log(error);
+            return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
+        }
+        if (!foundSlot) {
+            console.log("Slot with given id not found");
+            return res.status(400).json({ success: false, msg: "Please check the slot id" });
+        }
+        foundSlot.free = false;
+        foundSlot.booked_by = req.user._id;
+        foundSlot.booked_on = new Date().toUTCString();
+        foundSlot.title = req.body.title;
+        foundSlot.description = req.body.description;
+        foundSlot.save(async (error, savedSlot) => {
+            if (error) {
+                console.log(error);
+                return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
+            }
+            user.findById(req.user._id, async (error, foundUser) => {
+                if (error) {
+                    console.log(error);
+                    return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
+                }
+                foundUser.bookedSlots.push(savedSlot._id);
+                foundUser.save(function (error, savedUser) {
+                    if (error) {
+                        console.log(error);
+                        return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
+                    }
+                    return res.status(200).json({ success: true, msg: "Slot booking successful", slot: savedSlot });
+                });
+            });
+        });
+    });
+
     const { google } = require('googleapis');
     const { OAuth2 } = google.auth
     const oAuth2Client = new OAuth2(process.nextTick.CLIENT_ID, process.nextTick.SECRET)
@@ -272,41 +308,6 @@ app.post("/:uniqid/slots/:id", checkAuthenticated, async (req, res) => {
     )
 
 
-    slot.findById(req.params.id, async (error, foundSlot) => {
-        if (error) {
-            console.log(error);
-            return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
-        }
-        if (!foundSlot) {
-            console.log("Slot with given id not found");
-            return res.status(400).json({ success: false, msg: "Please check the slot id" });
-        }
-        foundSlot.free = false;
-        foundSlot.booked_by = req.user._id;
-        foundSlot.booked_on = new Date().toUTCString();
-        foundSlot.title = req.body.title;
-        foundSlot.description = req.body.description;
-        foundSlot.save(async (error, savedSlot) => {
-            if (error) {
-                console.log(error);
-                return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
-            }
-            user.findById(req.user._id, async (error, foundUser) => {
-                if (error) {
-                    console.log(error);
-                    return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
-                }
-                foundUser.bookedSlots.push(savedSlot._id);
-                foundUser.save(function (error, savedUser) {
-                    if (error) {
-                        console.log(error);
-                        return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
-                    }
-                    return res.status(200).json({ success: true, msg: "Slot booking successful", slot: savedSlot });
-                });
-            });
-        });
-    });
 })
 
 app.get('/googcal', checkAuthenticated, async (req, res) => {
