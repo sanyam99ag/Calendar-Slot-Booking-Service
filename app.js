@@ -396,6 +396,7 @@ app.post('/gogcal', checkAuthenticated, async (req, res) => {
                     });
                 } else {
                     console.log('No upcoming events found.');
+                    res.send('No upcoming events found.')
                 }
             });
         }
