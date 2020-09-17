@@ -11,8 +11,9 @@ const cookieParser = require('cookie-parser')
 const flash = require('connect-flash')
 
 // require('dotenv').config({ path: 'dev.env' });
-var var_arr = ['Refresh the browser to see your events!']
+var var_arr = [{ warning: 'Refresh the browser to see your events!' }]
 // const { Strategy } = require('passport-local')
+var res_arr = []
 
 
 const app = express();
@@ -61,7 +62,7 @@ const checkAuthenticated = function (req, res, next) {
 
 
 // Mongoose connection
-mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://slot:slotter@cluster0-u4rjh.mongodb.net/SLOTFREE?retryWrites=true&w=majority" , {
+mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://slot:slotter@cluster0-u4rjh.mongodb.net/SLOTFREE?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => console.log('Database connected')).catch(err => console.log(err));
@@ -210,6 +211,7 @@ app.get("/:uniqid/slots", checkAuthenticated, async (req, res) => {
             console.log("Api url does not exist");
             return res.redirect('/404')
         }
+        // res.send( {'slots': foundUser.slots})
         res.render('allslots', { 'user': foundUser.username, 'uid': foundUser._id, 'slots': foundUser.slots })
     });
 
@@ -390,9 +392,22 @@ app.post('/gogcal', checkAuthenticated, async (req, res) => {
                 if (err) return console.log('The API returned an error: ' + err);
                 const events = res.data.items;
                 if (events.length) {
-                    console.log('Upcoming 10 events:', events);
+                    // console.log('Upcoming 10 events:', events);
                     events.map((event, i) => {
-                        var_arr.push(event)
+                        var calData = {
+                            title: event.summary,
+                            organizer: event.organizer.email,
+                            startTime: event.start.dateTime,
+                            endTime: event.end.dateTime,
+                            attendees: event.attendees,
+                            // meetingId: event.conferenceId,
+                            hangoutLink: event.hangoutLink,
+                            status: event.status
+
+                        };
+                        // if (!res_arr.some(el => el.hangoutLink === calData.hangoutLink))
+                        //     res_arr.push(calData)
+                            // arr.push({ id: 2, name: "Evander" });
                     });
                 } else {
                     console.log('No upcoming events found.');
@@ -403,7 +418,10 @@ app.post('/gogcal', checkAuthenticated, async (req, res) => {
 
         fun()
     }
-    res.send(var_arr)
+    // console.log(res_arr)
+    res.render('calenderEvents', { 'calEvents': res_arr });
+
+    // res.send({'calEvents': res_arr})
 })
 
 // Logout GET route
