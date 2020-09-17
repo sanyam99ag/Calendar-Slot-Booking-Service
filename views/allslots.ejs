@@ -16,13 +16,15 @@
     <script src="/js/daygrid-main.js"></script>
     <script src="/js/interaction.main.js"></script>
 
+    <link rel="icon" href="/img/logo.svg" type="image/icon type">
+    <link rel="manifest" href="../manifest.json">
     <title>Book Slots</title>
     <style>
         .customborder {
             border-radius: 2%;
             border: 2px solid #593196;
         }
-
+        
         #calendar {
             max-width: 900px;
             margin: 10px auto;
@@ -30,14 +32,14 @@
     </style>
     <script type="text/javascript">
         var obj;
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
 
             var calendarEl = document.getElementById('calendar');
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 plugins: ['interaction', 'dayGrid'],
                 selectable: true,
-                dateClick: function (dateClickInfo) {
+                dateClick: function(dateClickInfo) {
                     var clickedDate = dateClickInfo.date.getFullYear() + "-" + dateClickInfo.date.getMonth() + "-" + dateClickInfo.date.getDate();
                     // console.log(clickedDate)
                     // d = new Date(dateClickInfo.date.getFullYear(), dateClickInfo.date.getMonth(), dateClickInfo.date.getDate())
@@ -63,7 +65,8 @@
 <body>
 
     <div class="container">
-        <h3 class="text-center p-3">Available Slots of <%= user %> !</h3>
+        <h3 class="text-center p-3">Available Slots of
+            <%= user %> !</h3>
         <h3 class="text-center p-2">Booking made easy.</h3>
         <a style="float: right;" class="btn btn-danger" href="/success">Dashboard</a>
 
@@ -74,15 +77,14 @@
                 <table id="myTable">
                     <% for(var i=0; i < slots.length; i++) { %>
 
-                    <td>
+                        <td>
 
-                        <button type="button" id="<%= slots[i]._id %>" class=" slotid btn btn-primary"
-                            onclick="myFunction()" data-toggle="modal" data-target=".modal">
+                            <button type="button" id="<%= slots[i]._id %>" class=" slotid btn btn-primary" onclick="myFunction()" data-toggle="modal" data-target=".modal">
                             <%= slots[i].time %>
                         </button>
 
-                    </td>
-                    <% } %>
+                        </td>
+                        <% } %>
                 </table>
             </div>
         </div>
@@ -100,13 +102,11 @@
 
                         <div class="form-group">
                             <label for="title">Enter Your Title</label>
-                            <input type="text" class="form-control" name="title" id="title" autocomplete="off"
-                                placeholder="Title">
+                            <input type="text" class="form-control" name="title" id="title" autocomplete="off" placeholder="Title">
                         </div>
                         <div class="form-group">
                             <label for="discription">Enter Your Discription</label>
-                            <input type="text" class="form-control" name="discription" id="discription"
-                                autocomplete="off" placeholder="Discription">
+                            <input type="text" class="form-control" name="discription" id="discription" autocomplete="off" placeholder="Discription">
                         </div>
                         <div class="form-group">
                             <input type="submit" class="btn btn-block btn-outline-primary" value="Confirm">
@@ -117,15 +117,9 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
 
 </html>

@@ -1,0 +1,15 @@
+{
+    "name": "CalenderSlotBookingService",
+    "short_name": "Slotfree",
+    "theme_color": "#ffcbe4",
+    "background_color": "#fa99ca",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "https://slotfree.herokuapp.com/",
+    "description": "Website to manage time slots for anh meeting",
+    "orientation": "any",
+    "icons": [{
+        "src": "/img/logo.png",
+        "sizes": "1024x1024"
+    }]
+}

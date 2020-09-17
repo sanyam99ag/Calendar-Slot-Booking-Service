@@ -21,6 +21,7 @@
     "googleapis": "^39.2.0",
     "jquery-datetimepicker": "^2.5.21",
     "mongoose": "^5.9.19",
+    "node-forge": "^0.10.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0"
   },
