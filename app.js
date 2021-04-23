@@ -12,7 +12,7 @@ const flash = require('connect-flash')
 
 // require('dotenv').config({ path: 'dev.env' });
 var var_arr = [{ warning: 'Refresh the browser to see your events!' }]
-// const { Strategy } = require('passport-local')
+    // const { Strategy } = require('passport-local')
 var res_arr = []
 
 
@@ -43,7 +43,7 @@ app.use(flash());
 
 // MIDDLEWARES
 // Global variable
-app.use(async (req, res, next) => {
+app.use(async(req, res, next) => {
     res.locals.success_message = req.flash('success_message');
     res.locals.error_message = req.flash('error_message');
     res.locals.error = req.flash('error');
@@ -51,7 +51,7 @@ app.use(async (req, res, next) => {
 });
 
 // Check if user is authenticated and clear cache accordingly
-const checkAuthenticated = function (req, res, next) {
+const checkAuthenticated = function(req, res, next) {
     if (req.isAuthenticated()) {
         res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, post-check=0, pre-check=0');
         return next();
@@ -68,12 +68,12 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://slot:slotter@cluster0
 }).then(() => console.log('Database connected')).catch(err => console.log(err));
 
 // Initial Register GET route
-app.get('/', async (req, res) => {
+app.get('/', async(req, res) => {
     res.render('register')
 })
 
 // Register POST route to get the form data
-app.post('/register', async (req, res) => {
+app.post('/register', async(req, res) => {
     var { email, username, password, confirmpassword } = await req.body;
     var err;
     // if any field is empty
@@ -90,9 +90,9 @@ app.post('/register', async (req, res) => {
     else if (typeof err == 'undefined') {
         const check = await user.exists({ email: req.body.email })
         if (check == false) {
-            bcrypt.genSalt(10, async (err, salt) => {
+            bcrypt.genSalt(10, async(err, salt) => {
                 if (err) throw err;
-                bcrypt.hash(password, salt, async (err, hash) => {
+                bcrypt.hash(password, salt, async(err, hash) => {
                     if (err) throw err;
                     password = hash;
 
@@ -107,8 +107,7 @@ app.post('/register', async (req, res) => {
                 });
 
             });
-        }
-        else {
+        } else {
             console.log('user exists')
 
             err = 'User with this email already exists!'
@@ -120,13 +119,13 @@ app.post('/register', async (req, res) => {
 
 // PassportJs Authentication Strategy
 var localStrategy = require('passport-local').Strategy;
-passport.use(new localStrategy({ usernameField: 'email' }, async (email, password, done) => {
-    user.findOne({ email: email }, async (err, data) => {
+passport.use(new localStrategy({ usernameField: 'email' }, async(email, password, done) => {
+    user.findOne({ email: email }, async(err, data) => {
         if (err) throw err;
         if (!data) {
             return done(null, false, { message: "User Doesn't Exists.." });
         }
-        bcrypt.compare(password, data.password, async (err, match) => {
+        bcrypt.compare(password, data.password, async(err, match) => {
             if (err) {
                 return done(null, false);
             }
@@ -140,18 +139,18 @@ passport.use(new localStrategy({ usernameField: 'email' }, async (email, passwor
     });
 }));
 
-passport.serializeUser(function (user, cb) {
+passport.serializeUser(function(user, cb) {
     cb(null, user.id);
 });
 
-passport.deserializeUser(function (id, cb) {
-    user.findById(id, function (err, user) {
+passport.deserializeUser(function(id, cb) {
+    user.findById(id, function(err, user) {
         cb(err, user);
     });
 });
 
 // Login get route
-app.get('/login', async (req, res) => {
+app.get('/login', async(req, res) => {
     res.render('login');
 })
 
@@ -165,28 +164,28 @@ app.post('/login', (req, res, next) => {
 });
 
 // Success GET route
-app.get('/success', checkAuthenticated, async (req, res) => {
+app.get('/success', checkAuthenticated, async(req, res) => {
     res.render('success', { 'user': req.user });
 });
 
 // Success POST route to get availabe slot information entered by owner
 // Add Slots
-app.post('/slot', checkAuthenticated, async (req, res) => {
+app.post('/slot', checkAuthenticated, async(req, res) => {
 
     const date = req.body.date;
     const time = req.body.time;
     const owner = req.user._id;
     console.log(date, time, owner);
     const newslot = await new slot({ date: date, time: time, owner: owner });
-    newslot.save(async (error, savedSlot) => {
+    newslot.save(async(error, savedSlot) => {
         if (error) throw error; //404
 
         if (savedSlot) {
-            user.findById(req.user._id, async (error, foundUser) => {
+            user.findById(req.user._id, async(error, foundUser) => {
                 if (error) throw error; //404
 
                 foundUser.slots.push(savedSlot);
-                foundUser.save(async (error, savedUser) => {
+                foundUser.save(async(error, savedUser) => {
                     if (error) throw error; //404
 
                     req.flash('success_message', "Slot set to available!");
@@ -200,8 +199,8 @@ app.post('/slot', checkAuthenticated, async (req, res) => {
 
 // Slots GET route 
 // To get all available slots based on the uniq id of partiular user
-app.get("/:uniqid/slots", checkAuthenticated, async (req, res) => {
-    user.findById(req.params.uniqid).populate("slots").exec(async (error, foundUser) => {
+app.get("/:uniqid/slots", checkAuthenticated, async(req, res) => {
+    user.findById(req.params.uniqid).populate("slots").exec(async(error, foundUser) => {
         if (error) {
             console.log(error);
             return res.redirect('/404')
@@ -212,14 +211,14 @@ app.get("/:uniqid/slots", checkAuthenticated, async (req, res) => {
             return res.redirect('/404')
         }
         // res.send( {'slots': foundUser.slots})
-        res.render('allslots', { 'user': foundUser.username, 'uid': foundUser._id, 'slots': foundUser.slots })
+        res.render('allslots', { 'user': foundUser.username, 'uid': foundUser.id, 'slots': foundUser.slots })
     });
 
 })
 
 // Book slot
-app.post("/:uniqid/slots/:id", checkAuthenticated, async (req, res) => {
-    slot.findById(req.params.id, async (error, foundSlot) => {
+app.post("/:uniqid/slots/:id", checkAuthenticated, async(req, res) => {
+    slot.findById(req.params.id, async(error, foundSlot) => {
         if (error) {
             console.log(error);
             return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
@@ -233,18 +232,18 @@ app.post("/:uniqid/slots/:id", checkAuthenticated, async (req, res) => {
         foundSlot.booked_on = new Date().toUTCString();
         foundSlot.title = req.body.title;
         foundSlot.description = req.body.description;
-        foundSlot.save(async (error, savedSlot) => {
+        foundSlot.save(async(error, savedSlot) => {
             if (error) {
                 console.log(error);
                 return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
             }
-            user.findById(req.user._id, async (error, foundUser) => {
+            user.findById(req.user._id, async(error, foundUser) => {
                 if (error) {
                     console.log(error);
                     return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
                 }
                 foundUser.bookedSlots.push(savedSlot._id);
-                foundUser.save(function (error, savedUser) {
+                foundUser.save(function(error, savedUser) {
                     if (error) {
                         console.log(error);
                         return res.status(400).json({ success: false, msg: "Something went wrong. Please try again" });
@@ -285,20 +284,21 @@ app.post("/:uniqid/slots/:id", checkAuthenticated, async (req, res) => {
     }
 
     calender.freebusy.query({
-        resource: {
-            timeMin: eventStartTime,
-            time: eventEndTime,
-            items: [{ id: 'primary' }]  //for primary calender events
+            resource: {
+                timeMin: eventStartTime,
+                time: eventEndTime,
+                items: [{ id: 'primary' }] //for primary calender events
+            },
         },
-    },
         (err, res) => {
             if (err) return console.log('Free Busy Query Error: ', err)
 
             const eventArr = res.data.calender.primary.busy // if not busy
             if (eventArr.length === 0) {
                 return calender.events.insert({
-                    calenderId: 'primary', resource: event
-                },
+                        calenderId: 'primary',
+                        resource: event
+                    },
                     err => {
                         if (err) return console.log('Error Creating Calender Event: ', err)
 
@@ -312,12 +312,12 @@ app.post("/:uniqid/slots/:id", checkAuthenticated, async (req, res) => {
 
 })
 
-app.get('/googcal', checkAuthenticated, async (req, res) => {
-    res.render('googleCalAuth');
+app.get('/googcal', checkAuthenticated, async(req, res) => {
+        res.render('googleCalAuth');
 
-})
-// Google Calender integration
-app.post('/gogcal', checkAuthenticated, async (req, res) => {
+    })
+    // Google Calender integration
+app.post('/gogcal', checkAuthenticated, async(req, res) => {
     const tkn = req.body.token
     const fs = require('fs');
     const readline = require('readline');
@@ -407,7 +407,7 @@ app.post('/gogcal', checkAuthenticated, async (req, res) => {
                         };
                         // if (!res_arr.some(el => el.hangoutLink === calData.hangoutLink))
                         //     res_arr.push(calData)
-                            // arr.push({ id: 2, name: "Evander" });
+                        // arr.push({ id: 2, name: "Evander" });
                     });
                 } else {
                     console.log('No upcoming events found.');
@@ -425,12 +425,12 @@ app.post('/gogcal', checkAuthenticated, async (req, res) => {
 })
 
 // Logout GET route
-app.get('/logout', async (req, res) => {
+app.get('/logout', async(req, res) => {
     req.logout();
     res.redirect('/login');
 })
 
-app.get('/404', async (req, res) => {
+app.get('/404', async(req, res) => {
     res.render('404')
 })
 

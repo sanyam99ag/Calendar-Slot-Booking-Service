@@ -59,6 +59,14 @@
             console.log(fst, lst)
             document.getElementById('modalf').action = lst;
         }
+
+        function reply_click(clicked_id) {
+            // alert(clicked_id);
+            console.log(clicked_id);
+            document.getElementById('modalf').action = document.getElementById('modalf').action + "/" + clicked_id;
+            console.log(document.getElementById('modalf').action)
+
+        }
     </script>
 </head>
 
@@ -79,7 +87,7 @@
 
                         <td>
 
-                            <button type="button" id="<%= slots[i]._id %>" class=" slotid btn btn-primary" onclick="myFunction()" data-toggle="modal" data-target=".modal">
+                            <button type="button" id="<%= slots[i]._id %>" class=" slotid btn btn-primary" onclick="reply_click(this.id)" data-toggle="modal" data-target=".modal">
                             <%= slots[i].time %>
                         </button>
 
@@ -98,7 +106,7 @@
 
                 </div>
                 <div class="modal-body">
-                    <form action="/<%= uid %>/slots/" method="POST" id="modalf">
+                    <form action="/<%= uid %>/slots" method="POST" id="modalf">
 
                         <div class="form-group">
                             <label for="title">Enter Your Title</label>
