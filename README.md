@@ -1,1 +1,1 @@
-# Navigus-CodingAssignment-Round2
+# Calendar Slot Booking Service web app
